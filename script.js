@@ -1,363 +1,216 @@
-alert("SCRIPT NUEVO CARGADO");
 const cartasBase = [
 
-    {
-        imagen: "imagenes/pedro-sanchez.jpg",
-        texto: "Pedro Sánchez<br>Presidente del Gobierno"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/pedro-sanchez.jpg",
+texto:"Pedro Sánchez<br>Presidente del Gobierno"
+},
 
-    {
-        imagen: "imagenes/carlos-cuerpo.jpg",
-        texto: "Carlos Cuerpo<br>Ministro de Economía, Comercio y Empresa"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/carlos-cuerpo.jpg",
+texto:"Carlos Cuerpo<br>Ministro de Economía"
+},
 
-    {
-        imagen: "imagenes/yolanda-diaz.jpg",
-        texto: "Yolanda Díaz<br>Ministra de Trabajo y Economía Social"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/yolanda-diaz.jpg",
+texto:"Yolanda Díaz<br>Ministra de Trabajo"
+},
 
-    {
-        imagen: "imagenes/sara-aagesen.jpg",
-        texto: "Sara Aagesen<br>Ministra para la Transición Ecológica"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/sara-aagesen.jpg",
+texto:"Sara Aagesen<br>Ministra para la Transición Ecológica"
+},
 
-    {
-        imagen: "imagenes/jose-albares.jpg",
-        texto: "José Manuel Albares<br>Ministro de Asuntos Exteriores"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/jose-albares.jpg",
+texto:"José Manuel Albares<br>Ministro de Exteriores"
+},
 
-    {
-        imagen: "imagenes/felix-bolanos.jpg",
-        texto: "Félix Bolaños<br>Ministro de Presidencia y Justicia"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/felix-bolanos.jpg",
+texto:"Félix Bolaños<br>Ministro de Presidencia"
+},
 
-    {
-        imagen: "imagenes/margarita-robles.jpg",
-        texto: "Margarita Robles<br>Ministra de Defensa"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/margarita-robles.jpg",
+texto:"Margarita Robles<br>Ministra de Defensa"
+},
 
-    {
-        imagen: "imagenes/marlaska.jpg",
-        texto: "Fernando Grande-Marlaska<br>Ministro del Interior"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/marlaska.jpg",
+texto:"Grande-Marlaska<br>Ministro del Interior"
+},
 
-    {
-        imagen: "imagenes/oscar-puente.jpg",
-        texto: "Óscar Puente<br>Ministro de Transportes"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/oscar-puente.jpg",
+texto:"Óscar Puente<br>Ministro de Transportes"
+},
 
-    {
-        imagen: "imagenes/luis-planas.jpg",
-        texto: "Luis Planas<br>Ministro de Agricultura"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/luis-planas.jpg",
+texto:"Luis Planas<br>Ministro de Agricultura"
+},
 
-    {
-        imagen: "imagenes/monica-garcia.jpg",
-        texto: "Mónica García<br>Ministra de Sanidad"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/monica-garcia.jpg",
+texto:"Mónica García<br>Ministra de Sanidad"
+},
 
-    {
-        imagen: "imagenes/diana-morant.jpg",
-        texto: "Diana Morant<br>Ministra de Ciencia"
-    },
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/diana-morant.jpg",
+texto:"Diana Morant<br>Ministra de Ciencia"
+},
 
-    {
-        imagen: "imagenes/ernest-urtasun.jpg",
-        texto: "Ernest Urtasun<br>Ministro de Cultura"
-    }
+{
+imagen:"/Cu-nto-sabes-de-nuestro-actual-gobierno-/imagenes/ernest-urtasun.jpg",
+texto:"Ernest Urtasun<br>Ministro de Cultura"
+}
 
 ];
 
 
-let cartas = [];
-let primera = null;
-let segunda = null;
-let bloqueo = false;
-
-let movimientos = 0;
-let tiempo = 0;
+let cartas=[];
+let primera=null;
+let segunda=null;
+let bloqueo=false;
+let movimientos=0;
+let tiempo=0;
 let reloj;
 
 
+function iniciarJuego(){
 
-function iniciarJuego() {
+cartas=[];
 
-    cartas = [];
+cartasBase.forEach((persona,i)=>{
 
-    cartasBase.forEach((persona, indice) => {
-
-
-        // Carta con fotografía
-
-        cartas.push({
-
-            tipo: "foto",
-
-            contenido:
-            `<img src="./${persona.imagen}" alt="foto">`,
-
-            pareja: indice
-
-        });
+cartas.push({
+contenido:`<img src="${persona.imagen}" class="foto">`,
+pareja:i
+});
 
 
+cartas.push({
+contenido:persona.texto,
+pareja:i
+});
 
-        // Carta con información
-
-        cartas.push({
-
-            tipo: "texto",
-
-            contenido: persona.texto,
-
-            pareja: indice
-
-        });
+});
 
 
-    });
+cartas.sort(()=>Math.random()-0.5);
+
+crearTablero();
+
+reloj=setInterval(()=>{
+
+tiempo++;
+
+document.getElementById("tiempo").textContent=tiempo;
+
+},1000);
+
+}
 
 
 
-    cartas.sort(() => Math.random() - 0.5);
+function crearTablero(){
+
+let juego=document.getElementById("juego");
+
+juego.innerHTML="";
 
 
-    crearTablero();
+cartas.forEach(carta=>{
+
+let div=document.createElement("div");
+
+div.className="carta";
 
 
-    iniciarReloj();
+div.onclick=()=>voltear(div,carta);
+
+
+juego.appendChild(div);
+
+});
 
 }
 
 
 
 
-function crearTablero() {
+function voltear(div,carta){
+
+if(bloqueo)return;
+
+if(div.classList.contains("volteada"))return;
 
 
-    const tablero = document.getElementById("juego");
+div.innerHTML=carta.contenido;
 
-    tablero.innerHTML = "";
-
-
-    cartas.forEach(carta => {
+div.classList.add("volteada");
 
 
-        const div = document.createElement("div");
+if(!primera){
+
+primera={div,carta};
+
+}else{
+
+segunda={div,carta};
+
+movimientos++;
+
+document.getElementById("movimientos").textContent=movimientos;
 
 
-        div.className = "carta";
+comprobar();
 
-
-        div.onclick = () => {
-
-            mostrarCarta(div, carta);
-
-        };
-
-
-        tablero.appendChild(div);
-
-
-    });
-
+}
 
 }
 
 
 
+function comprobar(){
+
+if(primera.carta.pareja===segunda.carta.pareja){
+
+primera.div.classList.add("correcta");
+segunda.div.classList.add("correcta");
+
+primera=null;
+segunda=null;
 
 
-function mostrarCarta(elemento, carta) {
+}else{
 
 
-    if (bloqueo) return;
+bloqueo=true;
 
 
-    if (elemento.classList.contains("volteada")) return;
+setTimeout(()=>{
+
+primera.div.innerHTML="";
+segunda.div.innerHTML="";
+
+primera.div.classList.remove("volteada");
+segunda.div.classList.remove("volteada");
 
 
+primera=null;
+segunda=null;
 
-    elemento.innerHTML = carta.contenido;
-
-    elemento.classList.add("volteada");
-
-
-
-    if (!primera) {
+bloqueo=false;
 
 
-        primera = {
-
-            elemento,
-            carta
-
-        };
-
-
-    } else {
-
-
-        segunda = {
-
-            elemento,
-            carta
-
-        };
-
-
-        movimientos++;
-
-        document.getElementById("movimientos").textContent = movimientos;
-
-
-        comprobarPareja();
-
-
-    }
+},1000);
 
 
 }
 
 
-
-
-
-function comprobarPareja() {
-
-
-    if (primera.carta.pareja === segunda.carta.pareja) {
-
-
-        primera.elemento.classList.add("correcta");
-
-        segunda.elemento.classList.add("correcta");
-
-
-        primera = null;
-
-        segunda = null;
-
-
-        comprobarVictoria();
-
-
-    } else {
-
-
-        bloqueo = true;
-
-
-        setTimeout(() => {
-
-
-            primera.elemento.innerHTML = "";
-
-            segunda.elemento.innerHTML = "";
-
-
-            primera.elemento.classList.remove("volteada");
-
-            segunda.elemento.classList.remove("volteada");
-
-
-            primera = null;
-
-            segunda = null;
-
-
-            bloqueo = false;
-
-
-        }, 1000);
-
-
-    }
-
-
 }
-
-
-
-
-function comprobarVictoria() {
-
-
-    const parejas = document.querySelectorAll(".correcta");
-
-
-    if (parejas.length === cartas.length) {
-
-
-        clearInterval(reloj);
-
-
-        document.getElementById("resultado").innerHTML =
-
-        `
-        🎉 ¡Juego completado!<br><br>
-        Tiempo: ${tiempo} segundos<br>
-        Movimientos: ${movimientos}
-        `;
-
-
-    }
-
-
-}
-
-
-
-
-
-function iniciarReloj() {
-
-
-    clearInterval(reloj);
-
-
-    tiempo = 0;
-
-
-    reloj = setInterval(() => {
-
-
-        tiempo++;
-
-
-        document.getElementById("tiempo").textContent = tiempo;
-
-
-    },1000);
-
-
-}
-
-
-
-
-function reiniciar() {
-
-
-    clearInterval(reloj);
-
-
-    movimientos = 0;
-
-    tiempo = 0;
-
-
-    document.getElementById("movimientos").textContent = 0;
-
-    document.getElementById("tiempo").textContent = 0;
-
-    document.getElementById("resultado").innerHTML = "";
-
-
-    iniciarJuego();
-
-}
-
 
 
 
