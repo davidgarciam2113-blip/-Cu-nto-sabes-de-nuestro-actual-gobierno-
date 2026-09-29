@@ -1,123 +1,115 @@
 const cartasBase = [
 
-{
-    imagen:"imagenes/pedro-sanchez.jpg",
-    texto:"Pedro Sánchez<br>Presidente del Gobierno"
-},
+    {
+        imagen: "imagenes/pedro-sanchez.jpg",
+        texto: "Pedro Sánchez<br>Presidente del Gobierno"
+    },
 
-{
-    imagen:"imagenes/carlos-cuerpo.jpg",
-    texto:"Carlos Cuerpo<br>Vicepresidente primero<br>Ministro de Economía, Comercio y Empresa"
-},
+    {
+        imagen: "imagenes/carlos-cuerpo.jpg",
+        texto: "Carlos Cuerpo<br>Ministro de Economía, Comercio y Empresa"
+    },
 
-{
-    imagen:"imagenes/yolanda-diaz.jpg",
-    texto:"Yolanda Díaz<br>Vicepresidenta segunda<br>Ministra de Trabajo y Economía Social"
-},
+    {
+        imagen: "imagenes/yolanda-diaz.jpg",
+        texto: "Yolanda Díaz<br>Ministra de Trabajo y Economía Social"
+    },
 
-{
-    imagen:"imagenes/sara-aagesen.jpg",
-    texto:"Sara Aagesen<br>Vicepresidenta tercera<br>Ministra para la Transición Ecológica"
-},
+    {
+        imagen: "imagenes/sara-aagesen.jpg",
+        texto: "Sara Aagesen<br>Ministra para la Transición Ecológica"
+    },
 
-{
-    imagen:"imagenes/jose-albares.jpg",
-    texto:"José Manuel Albares<br>Ministro de Asuntos Exteriores"
-},
+    {
+        imagen: "imagenes/jose-albares.jpg",
+        texto: "José Manuel Albares<br>Ministro de Asuntos Exteriores"
+    },
 
-{
-    imagen:"imagenes/felix-bolanos.jpg",
-    texto:"Félix Bolaños<br>Ministro de Presidencia, Justicia y Relaciones con las Cortes"
-},
+    {
+        imagen: "imagenes/felix-bolanos.jpg",
+        texto: "Félix Bolaños<br>Ministro de Presidencia y Justicia"
+    },
 
-{
-    imagen:"imagenes/margarita-robles.jpg",
-    texto:"Margarita Robles<br>Ministra de Defensa"
-},
+    {
+        imagen: "imagenes/margarita-robles.jpg",
+        texto: "Margarita Robles<br>Ministra de Defensa"
+    },
 
-{
-    imagen:"imagenes/marlaska.jpg",
-    texto:"Fernando Grande-Marlaska<br>Ministro del Interior"
-},
+    {
+        imagen: "imagenes/marlaska.jpg",
+        texto: "Fernando Grande-Marlaska<br>Ministro del Interior"
+    },
 
-{
-    imagen:"imagenes/oscar-puente.jpg",
-    texto:"Óscar Puente<br>Ministro de Transportes y Movilidad Sostenible"
-},
+    {
+        imagen: "imagenes/oscar-puente.jpg",
+        texto: "Óscar Puente<br>Ministro de Transportes"
+    },
 
-{
-    imagen:"imagenes/luis-planas.jpg",
-    texto:"Luis Planas<br>Ministro de Agricultura, Pesca y Alimentación"
-},
+    {
+        imagen: "imagenes/luis-planas.jpg",
+        texto: "Luis Planas<br>Ministro de Agricultura"
+    },
 
-{
-    imagen:"imagenes/monica-garcia.jpg",
-    texto:"Mónica García<br>Ministra de Sanidad"
-},
+    {
+        imagen: "imagenes/monica-garcia.jpg",
+        texto: "Mónica García<br>Ministra de Sanidad"
+    },
 
-{
-    imagen:"imagenes/diana-morant.jpg",
-    texto:"Diana Morant<br>Ministra de Ciencia, Innovación y Universidades"
-},
+    {
+        imagen: "imagenes/diana-morant.jpg",
+        texto: "Diana Morant<br>Ministra de Ciencia"
+    },
 
-{
-    imagen:"imagenes/ernest-urtasun.jpg",
-    texto:"Ernest Urtasun<br>Ministro de Cultura"
-}
-
+    {
+        imagen: "imagenes/ernest-urtasun.jpg",
+        texto: "Ernest Urtasun<br>Ministro de Cultura"
+    }
 
 ];
 
 
-
 let cartas = [];
-
 let primera = null;
 let segunda = null;
-
 let bloqueo = false;
 
 let movimientos = 0;
-
 let tiempo = 0;
-
-let contadorTiempo;
-
+let reloj;
 
 
-function iniciar(){
 
+function iniciarJuego() {
 
-    cartas=[];
+    cartas = [];
 
-
-    cartasBase.forEach((persona,index)=>{
+    cartasBase.forEach((persona, indice) => {
 
 
         // Carta con fotografía
 
         cartas.push({
 
-            tipo:"foto",
+            tipo: "foto",
 
             contenido:
-            `<img src="${persona.imagen}" alt="foto">`,
+            `<img src="./${persona.imagen}" alt="foto">`,
 
-            pareja:index
+            pareja: indice
 
         });
 
 
 
-        // Carta con nombre y ministerio
+        // Carta con información
 
         cartas.push({
 
-            tipo:"texto",
+            tipo: "texto",
 
-            contenido:persona.texto,
+            contenido: persona.texto,
 
-            pareja:index
+            pareja: indice
 
         });
 
@@ -126,21 +118,213 @@ function iniciar(){
 
 
 
-    // Mezclar cartas
-
-    cartas.sort(()=>Math.random()-0.5);
-
+    cartas.sort(() => Math.random() - 0.5);
 
 
     crearTablero();
 
 
+    iniciarReloj();
 
-    contadorTiempo=setInterval(()=>{
+}
+
+
+
+
+function crearTablero() {
+
+
+    const tablero = document.getElementById("juego");
+
+    tablero.innerHTML = "";
+
+
+    cartas.forEach(carta => {
+
+
+        const div = document.createElement("div");
+
+
+        div.className = "carta";
+
+
+        div.onclick = () => {
+
+            mostrarCarta(div, carta);
+
+        };
+
+
+        tablero.appendChild(div);
+
+
+    });
+
+
+}
+
+
+
+
+
+function mostrarCarta(elemento, carta) {
+
+
+    if (bloqueo) return;
+
+
+    if (elemento.classList.contains("volteada")) return;
+
+
+
+    elemento.innerHTML = carta.contenido;
+
+    elemento.classList.add("volteada");
+
+
+
+    if (!primera) {
+
+
+        primera = {
+
+            elemento,
+            carta
+
+        };
+
+
+    } else {
+
+
+        segunda = {
+
+            elemento,
+            carta
+
+        };
+
+
+        movimientos++;
+
+        document.getElementById("movimientos").textContent = movimientos;
+
+
+        comprobarPareja();
+
+
+    }
+
+
+}
+
+
+
+
+
+function comprobarPareja() {
+
+
+    if (primera.carta.pareja === segunda.carta.pareja) {
+
+
+        primera.elemento.classList.add("correcta");
+
+        segunda.elemento.classList.add("correcta");
+
+
+        primera = null;
+
+        segunda = null;
+
+
+        comprobarVictoria();
+
+
+    } else {
+
+
+        bloqueo = true;
+
+
+        setTimeout(() => {
+
+
+            primera.elemento.innerHTML = "";
+
+            segunda.elemento.innerHTML = "";
+
+
+            primera.elemento.classList.remove("volteada");
+
+            segunda.elemento.classList.remove("volteada");
+
+
+            primera = null;
+
+            segunda = null;
+
+
+            bloqueo = false;
+
+
+        }, 1000);
+
+
+    }
+
+
+}
+
+
+
+
+function comprobarVictoria() {
+
+
+    const parejas = document.querySelectorAll(".correcta");
+
+
+    if (parejas.length === cartas.length) {
+
+
+        clearInterval(reloj);
+
+
+        document.getElementById("resultado").innerHTML =
+
+        `
+        🎉 ¡Juego completado!<br><br>
+        Tiempo: ${tiempo} segundos<br>
+        Movimientos: ${movimientos}
+        `;
+
+
+    }
+
+
+}
+
+
+
+
+
+function iniciarReloj() {
+
+
+    clearInterval(reloj);
+
+
+    tiempo = 0;
+
+
+    reloj = setInterval(() => {
+
 
         tiempo++;
 
-        document.getElementById("tiempo").innerHTML=tiempo;
+
+        document.getElementById("tiempo").textContent = tiempo;
 
 
     },1000);
@@ -151,246 +335,29 @@ function iniciar(){
 
 
 
-
-function crearTablero(){
-
-
-    const juego=document.getElementById("juego");
+function reiniciar() {
 
 
-    juego.innerHTML="";
+    clearInterval(reloj);
 
 
+    movimientos = 0;
 
-    cartas.forEach((carta)=>{
-
-
-        let div=document.createElement("div");
+    tiempo = 0;
 
 
-        div.className="carta";
+    document.getElementById("movimientos").textContent = 0;
+
+    document.getElementById("tiempo").textContent = 0;
+
+    document.getElementById("resultado").innerHTML = "";
 
 
-        div.onclick=function(){
-
-            voltear(div,carta);
-
-        };
-
-
-        juego.appendChild(div);
-
-
-    });
-
+    iniciarJuego();
 
 }
 
 
 
 
-
-
-
-function voltear(elemento,carta){
-
-
-    if(bloqueo) return;
-
-
-    if(elemento.classList.contains("volteada")) return;
-
-
-
-    elemento.innerHTML=carta.contenido;
-
-
-    elemento.classList.add("volteada");
-
-
-
-    if(!primera){
-
-
-        primera={
-
-            elemento:elemento,
-
-            carta:carta
-
-        };
-
-
-    }
-
-    else{
-
-
-        segunda={
-
-            elemento:elemento,
-
-            carta:carta
-
-        };
-
-
-
-        movimientos++;
-
-
-        document.getElementById("movimientos").innerHTML=movimientos;
-
-
-
-        comprobar();
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-function comprobar(){
-
-
-    if(primera.carta.pareja===segunda.carta.pareja){
-
-
-        primera.elemento.classList.add("acierto");
-
-        segunda.elemento.classList.add("acierto");
-
-
-
-        primera=null;
-
-        segunda=null;
-
-
-
-        comprobarGanador();
-
-
-    }
-
-    else{
-
-
-        bloqueo=true;
-
-
-
-        setTimeout(()=>{
-
-
-            primera.elemento.innerHTML="";
-
-            segunda.elemento.innerHTML="";
-
-
-
-            primera.elemento.classList.remove("volteada");
-
-            segunda.elemento.classList.remove("volteada");
-
-
-
-            primera=null;
-
-            segunda=null;
-
-
-
-            bloqueo=false;
-
-
-
-        },1000);
-
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-function comprobarGanador(){
-
-
-    let acertadas=document.querySelectorAll(".acierto");
-
-
-
-    if(acertadas.length===cartas.length){
-
-
-        clearInterval(contadorTiempo);
-
-
-
-        document.getElementById("resultado").innerHTML=
-
-        "🎉 ¡Enhorabuena!<br><br>"+
-
-        "Tiempo: "+tiempo+" segundos<br>"+
-
-        "Movimientos: "+movimientos;
-
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-function reiniciar(){
-
-
-    clearInterval(contadorTiempo);
-
-
-    movimientos=0;
-
-    tiempo=0;
-
-
-    document.getElementById("movimientos").innerHTML=0;
-
-    document.getElementById("tiempo").innerHTML=0;
-
-
-    document.getElementById("resultado").innerHTML="";
-
-
-    iniciar();
-
-
-}
-
-
-
-
-
-iniciar();
-
-
+iniciarJuego();
