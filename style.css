@@ -1,4 +1,180 @@
-body {
-    background: red !important;
-    color: white !important;
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    font-family:Arial, sans-serif;
+
+    background:#eef3f8;
+
+    color:#222;
+
+    text-align:center;
+
+    margin:0;
+
+}
+
+
+.contenedor{
+
+    max-width:900px;
+
+    margin:30px auto;
+
+}
+
+
+h1{
+
+    color:#173b63;
+
+    font-size:36px;
+
+}
+
+
+
+#datos{
+
+    margin:15px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+
+
+#juego{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,150px);
+
+    gap:15px;
+
+    justify-content:center;
+
+    margin:30px auto;
+
+}
+
+
+
+.carta{
+
+    width:150px;
+
+    height:150px;
+
+    background:#173b63;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:10px;
+
+    color:white;
+
+    font-size:16px;
+
+    transition:transform .3s;
+
+    overflow:hidden;
+
+}
+
+
+
+.carta:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+
+.carta img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    display:none;
+
+}
+
+
+
+.carta.visible,
+.carta.acierto{
+
+    background:white;
+
+    color:#173b63;
+
+    border:3px solid #173b63;
+
+}
+
+
+
+.carta.visible img,
+.carta.acierto img{
+
+    display:block;
+
+}
+
+
+
+button{
+
+    background:#173b63;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+    background:#28598a;
+
+}
+
+
+
+#resultado{
+
+    margin-top:25px;
+
+    color:#173b63;
+
+    font-size:24px;
+
 }
