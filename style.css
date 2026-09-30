@@ -1,478 +1,111 @@
-const cartasBase = [
-
-{
-imagen:"imagenes/pedro-sanchez.jpg",
-texto:"Pedro Sánchez<br>Presidente del Gobierno"
-},
-
-{
-imagen:"imagenes/carlos-cuerpo.jpg",
-texto:"Carlos Cuerpo<br>Ministro de Economía, Comercio y Empresa"
-},
-
-{
-imagen:"imagenes/yolanda-diaz.jpg",
-texto:"Yolanda Díaz<br>Ministra de Trabajo y Economía Social"
-},
-
-{
-imagen:"imagenes/sara-aagesen.jpg",
-texto:"Sara Aagesen<br>Ministra para la Transición Ecológica"
-},
-
-{
-imagen:"imagenes/jose-albares.jpg",
-texto:"José Manuel Albares<br>Ministro de Asuntos Exteriores"
-},
-
-{
-imagen:"imagenes/felix-bolanos.jpg",
-texto:"Félix Bolaños<br>Ministro de Presidencia y Justicia"
-},
-
-{
-imagen:"imagenes/margarita-robles.jpg",
-texto:"Margarita Robles<br>Ministra de Defensa"
-},
-
-{
-imagen:"imagenes/marlaska.jpg",
-texto:"Fernando Grande-Marlaska<br>Ministro del Interior"
-},
-
-{
-imagen:"imagenes/oscar-puente.jpg",
-texto:"Óscar Puente<br>Ministro de Transportes"
-},
-
-{
-imagen:"imagenes/luis-planas.jpg",
-texto:"Luis Planas<br>Ministro de Agricultura"
-},
-
-{
-imagen:"imagenes/monica-garcia.jpg",
-texto:"Mónica García<br>Ministra de Sanidad"
-},
-
-{
-imagen:"imagenes/diana-morant.jpg",
-texto:"Diana Morant<br>Ministra de Ciencia"
-},
-
-{
-imagen:"imagenes/ernest-urtasun.jpg",
-texto:"Ernest Urtasun<br>Ministro de Cultura"
+body{
+font-family:Arial, sans-serif;
+background:#eef3f8;
+text-align:center;
 }
 
-];
 
+.contenedor{
+max-width:900px;
+margin:auto;
+}
 
 
-let cartas=[];
+h1{
+color:#173b63;
+}
 
-let primera=null;
 
-let segunda=null;
+#juego{
 
-let bloqueo=false;
+display:grid;
 
-let movimientos=0;
+grid-template-columns:repeat(4,150px);
 
-let tiempo=0;
+gap:15px;
 
-let aciertos=0;
+justify-content:center;
 
-let reloj;
+margin:30px auto;
 
+}
 
 
-function iniciarJuego(){
+.carta{
 
+height:150px;
 
-cartas=[];
+background:#173b63;
 
-primera=null;
+border-radius:10px;
 
-segunda=null;
+cursor:pointer;
 
-bloqueo=false;
+display:flex;
 
-movimientos=0;
+align-items:center;
 
-tiempo=0;
+justify-content:center;
 
-aciertos=0;
+color:white;
 
+font-size:16px;
 
+overflow:hidden;
 
-document.getElementById("movimientos").textContent=0;
+transition:0.3s;
 
-document.getElementById("tiempo").textContent=0;
+}
 
-document.getElementById("resultado").innerHTML="";
 
+.carta img{
 
+width:100%;
 
-cartasBase.forEach((persona,index)=>{
+height:100%;
 
+object-fit:cover;
 
-// Carta fotografía
-
-cartas.push({
-
-contenido:
-`<img src="${persona.imagen}" class="foto">`,
-
-pareja:index
-
-});
-
-
-
-// Carta nombre
-
-cartas.push({
-
-contenido:
-`<div class="textoCarta">${persona.texto}</div>`,
-
-pareja:index
-
-});
-
-
-});
-
-
-
-cartas.sort(()=>Math.random()-0.5);
-
-
-
-crearTablero();
-
-
-
-clearInterval(reloj);
-
-
-
-reloj=setInterval(()=>{
-
-
-tiempo++;
-
-
-document.getElementById("tiempo").textContent=tiempo;
-
-
-},1000);
-
-
+display:none;
 
 }
 
 
 
+.carta.visible,
+.carta.acierto{
 
+background:white;
 
-
-
-function crearTablero(){
-
-
-const juego=document.getElementById("juego");
-
-
-juego.innerHTML="";
-
-
-
-cartas.forEach(carta=>{
-
-
-let div=document.createElement("div");
-
-
-div.className="carta";
-
-
-
-div.onclick=()=>mostrarCarta(div,carta);
-
-
-
-juego.appendChild(div);
-
-
-
-});
-
-
+color:#000;
 
 }
 
 
 
+.carta.visible img,
+.carta.acierto img{
 
-
-
-
-function mostrarCarta(div,carta){
-
-
-if(bloqueo)return;
-
-
-if(div.classList.contains("volteada"))return;
-
-
-
-div.innerHTML=carta.contenido;
-
-
-div.classList.add("volteada");
-
-
-
-if(!primera){
-
-
-primera={
-
-div:div,
-
-carta:carta
-
-};
-
-
-
-}
-
-else{
-
-
-segunda={
-
-div:div,
-
-carta:carta
-
-};
-
-
-
-movimientos++;
-
-
-document.getElementById("movimientos").textContent=movimientos;
-
-
-
-comprobarPareja();
-
-
+display:block;
 
 }
 
 
 
-}
+button{
 
+padding:10px 20px;
 
+font-size:16px;
 
-
-
-
-
-function comprobarPareja(){
-
-
-
-if(primera.carta.pareja===segunda.carta.pareja){
-
-
-
-aciertos++;
-
-
-
-mostrarMensaje("✅ ¡Correcto! Pareja encontrada");
-
-
-
-primera.div.classList.add("correcta");
-
-segunda.div.classList.add("correcta");
-
-
-
-primera=null;
-
-segunda=null;
-
-
-
-comprobarVictoria();
-
-
-
-}
-
-else{
-
-
-
-bloqueo=true;
-
-
-
-mostrarMensaje("❌ No coincide. Inténtalo de nuevo");
-
-
-
-setTimeout(()=>{
-
-
-primera.div.innerHTML="";
-
-segunda.div.innerHTML="";
-
-
-
-primera.div.classList.remove("volteada");
-
-segunda.div.classList.remove("volteada");
-
-
-
-primera=null;
-
-segunda=null;
-
-
-
-bloqueo=false;
-
-
-
-},1000);
-
-
+cursor:pointer;
 
 }
 
 
 
-}
+#resultado{
 
-
-
-
-
-
-
-
-function mostrarMensaje(texto){
-
-
-let mensaje=document.getElementById("mensaje");
-
-
-if(mensaje){
-
-
-mensaje.innerHTML=texto;
-
+color:#173b63;
 
 }
-
-
-
-}
-
-
-
-
-
-
-
-
-function comprobarVictoria(){
-
-
-let acertadas=document.querySelectorAll(".correcta");
-
-
-
-if(acertadas.length===cartas.length){
-
-
-
-clearInterval(reloj);
-
-
-
-let nota=(aciertos/cartasBase.length)*10;
-
-
-nota=nota.toFixed(1);
-
-
-
-document.getElementById("resultado").innerHTML=
-
-
-`
-
-<h2>🎉 Actividad terminada</h2>
-
-<p>Parejas correctas: 
-<strong>${aciertos}/${cartasBase.length}</strong></p>
-
-
-<p>Tiempo empleado:
-<strong>${tiempo} segundos</strong></p>
-
-
-<p>Movimientos:
-<strong>${movimientos}</strong></p>
-
-
-<h2>⭐ Nota: ${nota}/10</h2>
-
-
-`;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-function reiniciar(){
-
-
-clearInterval(reloj);
-
-
-iniciarJuego();
-
-
-}
-
-
-
-
-
-iniciarJuego();
