@@ -1,148 +1,113 @@
 const ministros = [
-
 {
 nombre:"Pedro Sánchez",
 ministerio:"Presidente del Gobierno",
 foto:"imagenes/pedro-sanchez.jpg"
 },
-
 {
 nombre:"Carlos Cuerpo",
 ministerio:"Economía, Comercio y Empresa",
 foto:"imagenes/carlos-cuerpo.jpg"
 },
-
 {
 nombre:"Yolanda Díaz",
 ministerio:"Trabajo y Economía Social",
 foto:"imagenes/yolanda-diaz.jpg"
 },
-
 {
 nombre:"Sara Aagesen",
 ministerio:"Transición Ecológica",
 foto:"imagenes/sara-aagesen.jpg"
 },
-
 {
 nombre:"José Manuel Albares",
 ministerio:"Asuntos Exteriores",
 foto:"imagenes/jose-albares.jpg"
 },
-
 {
 nombre:"Félix Bolaños",
-ministerio:"Presidencia y Justicia",
+ministerio:"Justicia y Presidencia",
 foto:"imagenes/felix-bolanos.jpg"
 },
-
 {
 nombre:"Margarita Robles",
 ministerio:"Defensa",
 foto:"imagenes/margarita-robles.jpg"
 },
-
 {
 nombre:"Fernando Grande-Marlaska",
 ministerio:"Interior",
 foto:"imagenes/marlaska.jpg"
 },
-
 {
 nombre:"Óscar Puente",
 ministerio:"Transportes",
 foto:"imagenes/oscar-puente.jpg"
 },
-
 {
 nombre:"Luis Planas",
 ministerio:"Agricultura",
 foto:"imagenes/luis-planas.jpg"
 },
-
 {
 nombre:"Mónica García",
 ministerio:"Sanidad",
 foto:"imagenes/monica-garcia.jpg"
 },
-
 {
 nombre:"Diana Morant",
 ministerio:"Ciencia",
 foto:"imagenes/diana-morant.jpg"
 },
-
 {
 nombre:"Ernest Urtasun",
 ministerio:"Cultura",
 foto:"imagenes/ernest-urtasun.jpg"
 }
-
 ];
 
 
-let cartas = [];
-let primera = null;
-let segunda = null;
-let bloqueo = false;
+let cartas=[];
+let primeraCarta=null;
+let segundaCarta=null;
+let bloqueo=false;
 
-let movimientos = 0;
-let aciertos = 0;
-let segundos = 0;
+let movimientos=0;
+let aciertos=0;
+let segundos=0;
 let reloj;
 
 
 
-function iniciarJuego(){
+function crearJuego(){
 
+const tablero=document.getElementById("juego");
 
-const juego = document.getElementById("juego");
-
-
-juego.innerHTML="";
+tablero.innerHTML="";
 
 
 cartas=[];
 
-primera=null;
-segunda=null;
-
-bloqueo=false;
-
-movimientos=0;
-aciertos=0;
-segundos=0;
 
 
-document.getElementById("movimientos").textContent="0";
-document.getElementById("tiempo").textContent="0";
-document.getElementById("resultado").innerHTML="";
-
-
-
-ministros.forEach((persona)=>{
+ministros.forEach((persona,index)=>{
 
 
 cartas.push({
 
+id:index,
 tipo:"foto",
-
-pareja:persona.nombre,
-
 contenido:
-`
-<img src="${persona.foto}" class="foto">
-`
+`<img src="${persona.foto}" class="foto">`,
+nombre:persona.nombre
 
 });
 
 
 cartas.push({
 
+id:index,
 tipo:"texto",
-
-pareja:persona.nombre,
-
 contenido:
 `
 <div class="textoCarta">
@@ -150,7 +115,8 @@ contenido:
 <br>
 ${persona.ministerio}
 </div>
-`
+`,
+nombre:persona.nombre
 
 });
 
@@ -163,13 +129,15 @@ cartas.sort(()=>Math.random()-0.5);
 
 
 
-cartas.forEach((carta)=>{
+cartas.forEach(carta=>{
 
 
 let div=document.createElement("div");
 
-
 div.className="carta";
+
+
+div.dataset.id=carta.id;
 
 
 div.onclick=function(){
@@ -179,10 +147,23 @@ mostrarCarta(div,carta);
 };
 
 
-juego.appendChild(div);
+tablero.appendChild(div);
 
 
 });
+
+
+
+movimientos=0;
+aciertos=0;
+segundos=0;
+
+
+document.getElementById("movimientos").textContent=0;
+
+document.getElementById("tiempo").textContent=0;
+
+document.getElementById("resultado").innerHTML="";
 
 
 
@@ -191,9 +172,7 @@ clearInterval(reloj);
 
 reloj=setInterval(()=>{
 
-
 segundos++;
-
 
 document.getElementById("tiempo").textContent=segundos;
 
@@ -201,9 +180,7 @@ document.getElementById("tiempo").textContent=segundos;
 },1000);
 
 
-
 }
-
 
 
 
@@ -214,41 +191,42 @@ function mostrarCarta(div,carta){
 if(bloqueo)return;
 
 
-if(div.classList.contains("abierta"))return;
+if(div.classList.contains("volteada"))return;
 
 
 
 div.innerHTML=carta.contenido;
 
-
-div.classList.add("abierta");
-
+div.classList.add("volteada");
 
 
-if(!primera){
 
+if(!primeraCarta){
 
-primera={div,carta};
-
+primeraCarta={
+div:div,
+carta:carta
+};
 
 return;
-
 
 }
 
 
 
-segunda={div,carta};
+segundaCarta={
+div:div,
+carta:carta
+};
 
 
 movimientos++;
-
 
 document.getElementById("movimientos").textContent=movimientos;
 
 
 
-comprobarPareja();
+comprobar();
 
 
 
@@ -257,43 +235,38 @@ comprobarPareja();
 
 
 
-
-
-function comprobarPareja(){
-
+function comprobar(){
 
 
 if(
-primera.carta.pareja===segunda.carta.pareja
+primeraCarta.carta.id === segundaCarta.carta.id
 &&
-primera.carta.tipo!==segunda.carta.tipo
+primeraCarta.carta.tipo !== segundaCarta.carta.tipo
 ){
 
+
+primeraCarta.div.classList.add("correcta");
+
+segundaCarta.div.classList.add("correcta");
 
 
 aciertos++;
 
 
-primera.div.classList.add("correcta");
-
-segunda.div.classList.add("correcta");
-
-
-
 alert("✅ ¡Correcto! Has encontrado la pareja");
 
 
-primera=null;
-
-segunda=null;
+primeraCarta=null;
+segundaCarta=null;
 
 
 
 if(aciertos===ministros.length){
 
-terminarJuego();
+finalizar();
 
 }
+
 
 
 }
@@ -307,20 +280,19 @@ bloqueo=true;
 setTimeout(()=>{
 
 
-primera.div.innerHTML="";
+primeraCarta.div.innerHTML="";
 
-segunda.div.innerHTML="";
-
-
-primera.div.classList.remove("abierta");
-
-segunda.div.classList.remove("abierta");
+segundaCarta.div.innerHTML="";
 
 
+primeraCarta.div.classList.remove("volteada");
 
-primera=null;
+segundaCarta.div.classList.remove("volteada");
 
-segunda=null;
+
+primeraCarta=null;
+
+segundaCarta=null;
 
 bloqueo=false;
 
@@ -339,61 +311,71 @@ bloqueo=false;
 
 
 
-function terminarJuego(){
+function finalizar(){
 
 
 clearInterval(reloj);
 
 
 
-let nota=(aciertos/ministros.length)*10;
+let nota=10-(movimientos-ministros.length)*0.1;
 
 
-nota=nota.toFixed(1);
+if(nota<0){
+
+nota=0;
+
+}
 
 
 
 document.getElementById("resultado").innerHTML=
 
 `
-🎉 Actividad completada
+🎉 Actividad terminada
 
 <br><br>
 
-Parejas acertadas:
+Parejas correctas:
 ${aciertos}/${ministros.length}
 
-<br><br>
+<br>
 
 Movimientos:
 ${movimientos}
 
-<br><br>
+<br>
 
 Tiempo:
 ${segundos} segundos
 
 <br><br>
 
-⭐ Nota final:
-<strong>${nota}/10</strong>
+⭐ Nota:
+<b>${nota.toFixed(1)}/10</b>
 
 `;
 
 
 
-}
+alert(
+"🎉 Has terminado la actividad\n\nNota: "
++nota.toFixed(1)+"/10"
+);
 
+
+
+}
 
 
 
 
 function reiniciar(){
 
-iniciarJuego();
+crearJuego();
 
 }
 
 
 
-iniciarJuego();
+crearJuego();
