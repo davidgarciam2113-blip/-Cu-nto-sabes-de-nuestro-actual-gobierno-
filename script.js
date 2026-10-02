@@ -113,7 +113,6 @@ function crearJuego(){
 
     ministros.forEach((persona, indice) => {
 
-        // Carta con fotografía
         cartas.push({
             id: indice,
             tipo: "foto",
@@ -125,8 +124,6 @@ function crearJuego(){
             `
         });
 
-
-        // Carta con nombre + cargo
         cartas.push({
             id: indice,
             tipo: "texto",
@@ -150,15 +147,9 @@ function crearJuego(){
         const elemento = document.createElement("div");
 
         elemento.className = "carta";
-
         elemento.dataset.id = carta.id;
         elemento.dataset.tipo = carta.tipo;
 
-        /*
-        El contenido existe desde el principio,
-        pero el CSS lo mantiene oculto mientras
-        la carta está boca abajo.
-        */
         elemento.innerHTML = carta.contenido;
 
         elemento.addEventListener("click", () => {
@@ -187,7 +178,6 @@ function crearJuego(){
 }
 
 
-
 function mezclar(array){
 
     for(let i = array.length - 1; i > 0; i--){
@@ -203,7 +193,6 @@ function mezclar(array){
 }
 
 
-
 function voltear(carta){
 
     if(bloqueo) return;
@@ -211,7 +200,6 @@ function voltear(carta){
     if(carta.classList.contains("acierto")) return;
 
     if(carta === primera) return;
-
 
     carta.classList.add("visible");
 
@@ -232,11 +220,9 @@ function voltear(carta){
     document.getElementById("movimientos").textContent =
         movimientos;
 
-
     comprobarPareja();
 
 }
-
 
 
 function comprobarPareja(){
@@ -255,11 +241,9 @@ function comprobarPareja(){
 
         aciertos++;
 
-
         mostrarMensaje(
             "✅ ¡Correcto! Has encontrado una pareja."
         );
-
 
         primera = null;
         segunda = null;
@@ -271,17 +255,13 @@ function comprobarPareja(){
 
         }
 
-    }
-
-    else{
+    } else {
 
         bloqueo = true;
-
 
         mostrarMensaje(
             "❌ No coinciden. Inténtalo otra vez."
         );
-
 
         setTimeout(() => {
 
@@ -298,7 +278,6 @@ function comprobarPareja(){
     }
 
 }
-
 
 
 function mostrarMensaje(texto){
@@ -343,7 +322,6 @@ function mostrarMensaje(texto){
 }
 
 
-
 function finalizarJuego(){
 
     clearInterval(reloj);
@@ -352,15 +330,6 @@ function finalizarJuego(){
     const segundos =
         Math.floor((Date.now() - inicio) / 1000);
 
-
-    /*
-    13 parejas acertadas son necesarias
-    para completar el juego.
-
-    La nota parte de 10.
-    Cada intento adicional respecto
-    al mínimo posible resta 0,1.
-    */
 
     const movimientosMinimos =
         ministros.length;
@@ -412,7 +381,6 @@ function finalizarJuego(){
     );
 
 }
-
 
 
 function reiniciar(){
