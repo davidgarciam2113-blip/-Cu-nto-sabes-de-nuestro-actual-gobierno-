@@ -8,348 +8,420 @@ foto:"imagenes/pedro-sanchez.jpg"
 
 {
 nombre:"Carlos Cuerpo",
-ministerio:"Economía",
+ministerio:"Vicepresidente primero y ministro de Economía, Comercio y Empresa",
 foto:"imagenes/carlos-cuerpo.jpg"
 },
 
 {
 nombre:"Yolanda Díaz",
-ministerio:"Trabajo",
+ministerio:"Vicepresidenta segunda y ministra de Trabajo y Economía Social",
 foto:"imagenes/yolanda-diaz.jpg"
 },
 
 {
 nombre:"Sara Aagesen",
-ministerio:"Transición Ecológica",
+ministerio:"Vicepresidenta tercera y ministra para la Transición Ecológica y el Reto Demográfico",
 foto:"imagenes/sara-aagesen.jpg"
 },
 
 {
 nombre:"José Manuel Albares",
-ministerio:"Asuntos Exteriores",
+ministerio:"Ministro de Asuntos Exteriores, Unión Europea y Cooperación",
 foto:"imagenes/jose-albares.jpg"
 },
 
 {
 nombre:"Félix Bolaños",
-ministerio:"Justicia",
+ministerio:"Ministro de la Presidencia, Justicia y Relaciones con las Cortes",
 foto:"imagenes/felix-bolanos.jpg"
+},
+
+{
+nombre:"Margarita Robles",
+ministerio:"Ministra de Defensa",
+foto:"imagenes/margarita-robles.jpg"
+},
+
+{
+nombre:"Fernando Grande-Marlaska",
+ministerio:"Ministro del Interior",
+foto:"imagenes/marlaska.jpg"
+},
+
+{
+nombre:"Óscar Puente",
+ministerio:"Ministro de Transportes y Movilidad Sostenible",
+foto:"imagenes/oscar-puente.jpg"
+},
+
+{
+nombre:"Luis Planas",
+ministerio:"Ministro de Agricultura, Pesca y Alimentación",
+foto:"imagenes/luis-planas.jpg"
+},
+
+{
+nombre:"Mónica García",
+ministerio:"Ministra de Sanidad",
+foto:"imagenes/monica-garcia.jpg"
+},
+
+{
+nombre:"Diana Morant",
+ministerio:"Ministra de Ciencia, Innovación y Universidades",
+foto:"imagenes/diana-morant.jpg"
+},
+
+{
+nombre:"Ernest Urtasun",
+ministerio:"Ministro de Cultura",
+foto:"imagenes/ernest-urtasun.jpg"
 }
 
 ];
 
 
-let cartas=[];
+let cartas = [];
+let primera = null;
+let segunda = null;
+let bloqueo = false;
 
-let primera=null;
-let segunda=null;
-
-let bloqueo=false;
-
-let movimientos=0;
-
-let aciertos=0;
-
+let movimientos = 0;
+let aciertos = 0;
 let inicio;
-
 let reloj;
-
 
 
 function crearJuego(){
 
+    const juego = document.getElementById("juego");
 
-const juego=document.getElementById("juego");
+    juego.innerHTML = "";
 
+    cartas = [];
+    primera = null;
+    segunda = null;
+    bloqueo = false;
 
-juego.innerHTML="";
+    movimientos = 0;
+    aciertos = 0;
 
+    document.getElementById("movimientos").textContent = "0";
+    document.getElementById("tiempo").textContent = "0";
+    document.getElementById("resultado").innerHTML = "";
 
-cartas=[];
 
+    ministros.forEach((persona, indice) => {
 
+        // Carta con fotografía
+        cartas.push({
+            id: indice,
+            tipo: "foto",
+            contenido: `
+                <img
+                    src="${persona.foto}"
+                    alt="Fotografía de ${persona.nombre}"
+                >
+            `
+        });
 
-ministros.forEach((m,i)=>{
 
+        // Carta con nombre + cargo
+        cartas.push({
+            id: indice,
+            tipo: "texto",
+            contenido: `
+                <div class="textoCarta">
+                    <strong>${persona.nombre}</strong>
+                    <br>
+                    <span>${persona.ministerio}</span>
+                </div>
+            `
+        });
 
-cartas.push({
+    });
 
-id:i,
 
-tipo:"foto",
+    mezclar(cartas);
 
-contenido:`<img src="${m.foto}">`
 
-});
+    cartas.forEach(carta => {
 
+        const elemento = document.createElement("div");
 
+        elemento.className = "carta";
 
-cartas.push({
+        elemento.dataset.id = carta.id;
+        elemento.dataset.tipo = carta.tipo;
 
-id:i,
+        /*
+        El contenido existe desde el principio,
+        pero el CSS lo mantiene oculto mientras
+        la carta está boca abajo.
+        */
+        elemento.innerHTML = carta.contenido;
 
-tipo:"texto",
+        elemento.addEventListener("click", () => {
+            voltear(elemento);
+        });
 
-contenido:`
+        juego.appendChild(elemento);
 
-<strong>${m.nombre}</strong>
+    });
 
-<br>
 
-${m.ministerio}
+    clearInterval(reloj);
 
-`
+    inicio = Date.now();
 
-});
+    reloj = setInterval(() => {
 
+        const segundos =
+            Math.floor((Date.now() - inicio) / 1000);
 
-});
+        document.getElementById("tiempo").textContent =
+            segundos;
 
-
-
-cartas.sort(()=>Math.random()-0.5);
-
-
-
-cartas.forEach(c=>{
-
-
-let carta=document.createElement("div");
-
-
-carta.className="carta";
-
-
-carta.dataset.id=c.id;
-
-
-carta.dataset.tipo=c.tipo;
-
-
-carta.innerHTML=c.contenido;
-
-
-
-carta.onclick=function(){
-
-voltear(carta);
-
-};
-
-
-
-juego.appendChild(carta);
-
-
-
-});
-
-
-
-movimientos=0;
-
-aciertos=0;
-
-
-document.getElementById("movimientos").textContent=0;
-
-
-document.getElementById("tiempo").textContent=0;
-
-
-inicio=new Date();
-
-
-clearInterval(reloj);
-
-
-reloj=setInterval(()=>{
-
-
-let segundos=Math.floor((new Date()-inicio)/1000);
-
-
-document.getElementById("tiempo").textContent=segundos;
-
-
-},1000);
-
-
+    }, 1000);
 
 }
 
 
+
+function mezclar(array){
+
+    for(let i = array.length - 1; i > 0; i--){
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] =
+            [array[j], array[i]];
+
+    }
+
+}
 
 
 
 function voltear(carta){
 
+    if(bloqueo) return;
 
-if(bloqueo) return;
+    if(carta.classList.contains("acierto")) return;
 
-
-if(carta===primera) return;
-
-
-
-carta.classList.add("visible");
+    if(carta === primera) return;
 
 
-
-if(!primera){
-
-primera=carta;
-
-return;
-
-}
+    carta.classList.add("visible");
 
 
+    if(!primera){
 
-segunda=carta;
+        primera = carta;
 
+        return;
 
-movimientos++;
-
-
-document.getElementById("movimientos").textContent=movimientos;
-
+    }
 
 
-comprobar();
+    segunda = carta;
+
+    movimientos++;
+
+    document.getElementById("movimientos").textContent =
+        movimientos;
 
 
+    comprobarPareja();
 
 }
 
 
 
+function comprobarPareja(){
+
+    const mismaPersona =
+        primera.dataset.id === segunda.dataset.id;
+
+    const distintoTipo =
+        primera.dataset.tipo !== segunda.dataset.tipo;
 
 
-function comprobar(){
+    if(mismaPersona && distintoTipo){
+
+        primera.classList.add("acierto");
+        segunda.classList.add("acierto");
+
+        aciertos++;
 
 
-if(primera.dataset.id===segunda.dataset.id 
-&& primera.dataset.tipo!==segunda.dataset.tipo){
+        mostrarMensaje(
+            "✅ ¡Correcto! Has encontrado una pareja."
+        );
 
 
-
-primera.classList.add("acierto");
-
-segunda.classList.add("acierto");
+        primera = null;
+        segunda = null;
 
 
+        if(aciertos === ministros.length){
 
-aciertos++;
+            finalizarJuego();
 
+        }
 
-primera=null;
+    }
 
-segunda=null;
+    else{
 
-
-
-if(aciertos===ministros.length){
-
-finalizar();
-
-}
+        bloqueo = true;
 
 
-
-}else{
-
-
-
-bloqueo=true;
+        mostrarMensaje(
+            "❌ No coinciden. Inténtalo otra vez."
+        );
 
 
+        setTimeout(() => {
 
-setTimeout(()=>{
+            primera.classList.remove("visible");
+            segunda.classList.remove("visible");
 
+            primera = null;
+            segunda = null;
 
-primera.classList.remove("visible");
+            bloqueo = false;
 
-segunda.classList.remove("visible");
+        }, 900);
 
-
-primera=null;
-
-segunda=null;
-
-
-bloqueo=false;
-
-
-},1000);
-
-
-
-}
-
+    }
 
 }
 
 
 
+function mostrarMensaje(texto){
+
+    let mensaje =
+        document.getElementById("mensaje");
 
 
-function finalizar(){
+    if(!mensaje){
+
+        mensaje =
+            document.createElement("div");
+
+        mensaje.id = "mensaje";
+
+        const juego =
+            document.getElementById("juego");
+
+        juego.parentNode.insertBefore(
+            mensaje,
+            juego
+        );
+
+    }
 
 
-clearInterval(reloj);
+    mensaje.textContent = texto;
 
 
-
-let tiempo=Math.floor((new Date()-inicio)/1000);
-
-
-
-let nota=10-(movimientos-ministros.length)*0.2;
+    clearTimeout(
+        mostrarMensaje.temporizador
+    );
 
 
-if(nota<0){
+    mostrarMensaje.temporizador =
+        setTimeout(() => {
 
-nota=0;
+            mensaje.textContent = "";
 
-}
-
-
-
-document.getElementById("resultado").innerHTML=
-
-`
-
-🎉 Actividad completada
-
-<br>
-
-Movimientos: ${movimientos}
-
-<br>
-
-Tiempo: ${tiempo}s
-
-<br><br>
-
-⭐ Nota: ${nota.toFixed(1)}/10
-
-`;
-
-
+        }, 1500);
 
 }
 
 
+
+function finalizarJuego(){
+
+    clearInterval(reloj);
+
+
+    const segundos =
+        Math.floor((Date.now() - inicio) / 1000);
+
+
+    /*
+    13 parejas acertadas son necesarias
+    para completar el juego.
+
+    La nota parte de 10.
+    Cada intento adicional respecto
+    al mínimo posible resta 0,1.
+    */
+
+    const movimientosMinimos =
+        ministros.length;
+
+    const errores =
+        Math.max(
+            0,
+            movimientos - movimientosMinimos
+        );
+
+
+    let nota =
+        10 - (errores * 0.1);
+
+
+    if(nota < 0){
+
+        nota = 0;
+
+    }
+
+
+    document.getElementById("resultado").innerHTML = `
+        🎉 Actividad completada
+        <br><br>
+
+        Parejas:
+        <strong>${aciertos}/${ministros.length}</strong>
+
+        <br>
+
+        Movimientos:
+        <strong>${movimientos}</strong>
+
+        <br>
+
+        Tiempo:
+        <strong>${segundos}s</strong>
+
+        <br><br>
+
+        ⭐ Nota:
+        <strong>${nota.toFixed(1)}/10</strong>
+    `;
+
+
+    mostrarMensaje(
+        "🎉 ¡Actividad completada!"
+    );
+
+}
 
 
 
 function reiniciar(){
 
-crearJuego();
+    clearInterval(reloj);
+
+    crearJuego();
 
 }
-
 
 
 crearJuego();
